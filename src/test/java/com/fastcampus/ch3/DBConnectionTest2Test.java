@@ -71,12 +71,33 @@ public class DBConnectionTest2Test {
     // 매개변수로 받은 사용자 정보를 user_info테이블을 update하는 메서드
    public int updateUser(User user) throws Exception {
         Connection conn = ds.getConnection();
-        String sql = "update user_info set pwd='1122' where id= ?";
-        return 0;
+
+        String sql = "update user_info set pwd=?, name=?, email=?, birth=?, sns=? where id= ?";
+
+        PreparedStatement pstmt = conn.prepareStatement(sql);
+        pstmt.setString(1, user.getPwd());
+        pstmt.setString(2, user.getName());
+        pstmt.setString(3, user.getEmail());
+        pstmt.setDate(4, new java.sql.Date(user.getBirth().getTime()));
+        pstmt.setString(5, user.getSns());
+        pstmt.setString(6, user.getId());
+
+        int rowCnt = pstmt.executeUpdate();
+        return rowCnt;
    }
 
    @Test
-   public void updateUser() throws Exception {
+   public void updateUserTest() throws Exception {
+     deleteAll();
+     User user = new User("asdf22", "1234", "djdu", "djdu4496@gmail.com", new Date(), "fb", new Date());
+     int rowCnt = insertUser(user);
+     assertTrue(rowCnt==1);
+
+     User user2 = new User("asdf22", "1123", "djdu", "djdu4496@gmail.com", new Date(), "fb", new Date());
+     rowCnt = updateUser(user2);
+     assertTrue(rowCnt==1);
+
+     assertTrue(selectUser("asdf22").getPwd().equals("1123"));
 
    }
 
