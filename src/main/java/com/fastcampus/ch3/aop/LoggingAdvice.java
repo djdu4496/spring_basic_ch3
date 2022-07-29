@@ -10,7 +10,7 @@ import java.util.Arrays;
 @Component
 @Aspect
 public class LoggingAdvice {
-    @Around("execution(* com.fastcampus.ch3.aop.MyMath.*(..))") // pointcut - 부가기능이 적용될 메서드의 패턴
+    @Around("execution(* com.fastcampus.ch3.aop.MyMath.add(..))") // pointcut - 부가기능이 적용될 메서드의 패턴
     public Object methodCallLog(ProceedingJoinPoint pjp) throws Throwable {
         long start = System.currentTimeMillis();
         System.out.println("<<[start]" + pjp.getSignature().getName() + Arrays.toString(pjp.getArgs()));

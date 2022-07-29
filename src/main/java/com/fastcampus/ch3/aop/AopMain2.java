@@ -9,6 +9,6 @@ public class AopMain2 {
         MyMath mm = (MyMath)ac.getBean("myMath");
         mm.add(3, 5);
         mm.add(1, 2, 3);
-        mm.multiply(3, 5);
+        System.out.println("mm.multiply(3, 5) = " + mm.multiply(3, 5));
     }
 }

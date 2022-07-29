@@ -1,0 +1,52 @@
+package com.fastcampus.ch3;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.datasource.DataSourceUtils;
+import org.springframework.stereotype.Repository;
+
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+@Repository
+public class B1Dao {
+    @Autowired
+    DataSource ds;
+
+    public int insert(int key, int value) throws Exception {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+
+        try {
+//            conn=ds.getConnection();
+            conn = DataSourceUtils.getConnection(ds);
+            pstmt = conn.prepareStatement("insert into b1 values(?,?)");
+            pstmt.setInt(1, key);
+            pstmt.setInt(2, value);
+
+            return pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+//            close(conn, pstmt);
+            close(pstmt);
+            DataSourceUtils.releaseConnection(conn, ds);
+        }
+        return 0;
+    }
+
+    private void close(AutoCloseable... acs) {
+        for(AutoCloseable ac :acs)
+            try { if(ac!=null) ac.close(); } catch(Exception e) { e.printStackTrace(); }
+    }
+
+    public void deleteAll() throws Exception {
+        // [정정] deleteAll()은 Tx와 별개로 동작해야 하므로 아래와 같이 해야 합니다.
+        Connection conn = ds.getConnection();
+        String sql = "delete from a1";
+        PreparedStatement pstmt = conn.prepareStatement(sql);
+        pstmt.executeUpdate();
+        close(pstmt);
+    }
+}
