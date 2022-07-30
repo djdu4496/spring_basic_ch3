@@ -21,6 +21,7 @@ public class A1Dao {
         try {
 //            conn=ds.getConnection();
             conn = DataSourceUtils.getConnection(ds);
+            System.out.println("conn = " + conn);
             pstmt = conn.prepareStatement("insert into a1 values(?,?)");
             pstmt.setInt(1, key);
             pstmt.setInt(2, value);
@@ -28,12 +29,12 @@ public class A1Dao {
             return pstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+            throw e;
         } finally {
 //            close(conn, pstmt);
             close(pstmt);
             DataSourceUtils.releaseConnection(conn, ds);
         }
-        return 0;
     }
 
     private void close(AutoCloseable... acs) {
